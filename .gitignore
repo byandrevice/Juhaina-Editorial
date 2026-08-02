@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Next.js and build output
+.next/
+out/
+dist/
+coverage/
+
+# Local services and test output
+.supabase/
+supabase/.temp/
+playwright-report/
+test-results/
+
+# Environment and deployment state
+.env
+.env.*
+!.env.example
+.vercel/
+
+# Logs and local OS/editor files
+*.log
+.DS_Store
+.idea/
+.vscode/
+
