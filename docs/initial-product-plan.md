@@ -221,12 +221,16 @@ it.
 
 ### Ranked-list data
 
-- `list_documents`: revision id plus introduction and list type.
+- `list_documents`: revision id, introduction, client-authored list type label,
+  and client-authored date/era label. Presets may be offered for speed, but
+  neither label is restricted to an enum: the author must be able to publish
+  titles such as `Favorite Films of the Mid-1990s` without a code change.
 - `list_items`: revision id, stable item id, rank/sort order, title, optional
   subtitle/creator/location, note, asset, and optional external URL.
-- Entry-level category and year drive public filtering. Avoid a generic EAV
-  field system in version one; add item fields only after representative lists
-  expose a repeated need.
+- Store optional normalized type/year values separately when useful for public
+  filtering; never derive the visible title from those normalized values alone.
+  Avoid a generic EAV field system in version one; add item fields only after
+  representative lists expose a repeated need.
 
 ### Moodboard data
 
@@ -643,8 +647,12 @@ using licensed or owner-supplied imagery.
 
 - Validate the ranked-list structure with representative film, album, or
   restaurant content.
-- Deliver list building, accessible reordering, category/year filters, URLs,
-  index, and reader.
+- Deliver list building, accessible reordering, author-controlled Type/Period
+  filters, URLs, index, and reader.
+- Support 1–20 items, ranked or unranked presentation, optional artwork,
+  optional Poster View links, and 2:3, 5:8, 1:1, and 16:9 artwork frames.
+- Ship one live list per Type + Period pair in v1. Defer multiple matching lists
+  and their conditional title selector to v2.
 
 ### Phase 5 — Production moodboards
 

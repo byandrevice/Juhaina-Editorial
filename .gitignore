@@ -6,6 +6,7 @@ node_modules/
 out/
 dist/
 coverage/
+*.tsbuildinfo
 
 # Local services and test output
 .supabase/
@@ -24,4 +25,5 @@ test-results/
 .DS_Store
 .idea/
 .vscode/
-
+.vercel
+.env*
