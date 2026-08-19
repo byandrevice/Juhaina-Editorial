@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { FilmIndex } from "@/components/film-index";
 import { ProjectionIndex } from "@/components/projection-index";
 import { getPublicFilmEssays } from "@/lib/films-data";
+import { getPublicProjectionEssays } from "@/lib/projections-data";
 
 const sections = new Set(["films", "projections"]);
 
@@ -25,5 +26,6 @@ export default async function SectionPage({ params }: SectionPageProps) {
     return <FilmIndex essays={essays} />;
   }
 
-  return <ProjectionIndex />;
+  const essays = await getPublicProjectionEssays();
+  return <ProjectionIndex essays={essays} />;
 }

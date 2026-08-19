@@ -1,4 +1,5 @@
 import { moodboardCategories, type MoodboardCategory } from "./moodboards-data";
+import { getHiddenFixtureKeys } from "./fixture-visibility";
 import { hasSupabaseConfig } from "./supabase/config";
 import { createPublicClient } from "./supabase/public";
 
@@ -27,6 +28,12 @@ type PublishedAsset = {
 
 export async function getPublishedMoodboardCategories(): Promise<MoodboardCategory[]> {
   if (!hasSupabaseConfig()) return moodboardCategories;
+  const hidden = await getHiddenFixtureKeys("moodboards");
+  if (!hidden) return [];
+  const samples = moodboardCategories.map((category) => ({
+    ...category,
+    boards: category.boards.filter((board) => !hidden.has(`${category.slug}:${board.slug}`)),
+  })).filter((category) => category.boards.length > 0);
 
   try {
     const supabase = createPublicClient();
@@ -38,21 +45,21 @@ export async function getPublishedMoodboardCategories(): Promise<MoodboardCatego
         .order("position"),
     ]);
 
-    if (categoryError || postError || !categories?.length || !posts?.length) return moodboardCategories;
+    if (categoryError || postError || !categories?.length || !posts?.length) return samples;
 
     const publishedPosts = posts as PublishedPost[];
     const revisionIds = publishedPosts.map((post) => post.published_revision_id).filter(Boolean);
     const { data: revisions, error: revisionError } = await supabase.from("moodboard_revisions")
       .select("id, title, preview_asset_id, full_asset_id, updated_at")
       .in("id", revisionIds);
-    if (revisionError || !revisions?.length) return moodboardCategories;
+    if (revisionError || !revisions?.length) return samples;
 
     const publishedRevisions = revisions as PublishedRevision[];
     const assetIds = Array.from(new Set(publishedRevisions.flatMap((revision) => [revision.preview_asset_id, revision.full_asset_id]).filter(Boolean)));
     const { data: assets, error: assetError } = await supabase.from("assets")
       .select("id, storage_path, byte_size")
       .in("id", assetIds);
-    if (assetError || !assets?.length) return moodboardCategories;
+    if (assetError || !assets?.length) return samples;
 
     const assetById = new Map((assets as PublishedAsset[]).map((asset) => [asset.id, asset]));
     const signed = new Map<string, string>();
@@ -95,8 +102,23 @@ export async function getPublishedMoodboardCategories(): Promise<MoodboardCatego
         .sort((a, b) => a.order - b.order),
     })).filter((category) => category.boards.length > 0);
 
-    return populated.length ? populated : moodboardCategories;
+    const databaseSlugs = new Set(populated.flatMap((category) => category.boards.map((board) => board.slug)));
+    const merged = populated.map((category) => {
+      const sampleCategory = samples.find((sample) => sample.slug === category.slug);
+      return {
+        ...category,
+        boards: [
+          ...category.boards,
+          ...(sampleCategory?.boards ?? []).filter((board) => !databaseSlugs.has(board.slug)),
+        ].sort((first, second) => first.order - second.order),
+      };
+    });
+    const populatedCategorySlugs = new Set(populated.map((category) => category.slug));
+    return [
+      ...merged,
+      ...samples.filter((category) => !populatedCategorySlugs.has(category.slug)),
+    ].sort((first, second) => first.order - second.order);
   } catch {
-    return moodboardCategories;
+    return samples;
   }
 }

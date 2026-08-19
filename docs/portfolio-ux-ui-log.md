@@ -1474,3 +1474,46 @@ editorial system, including responsive validation and exact token handoff.
   reader while all six existing titles and excerpts remain unchanged.
 - Browser console remained clean and `npm run typecheck` plus
   `npm run build` passed.
+
+## 2026-08-19 — Client-managed launch samples and Projections authoring
+
+### Problem
+
+The production mock site mixed bundled portfolio fixtures with a real Supabase
+backend. Uploaded content did not overwrite fixture files, but the author could
+not remove samples through the admin, Films was locked to mock mode, and
+Projections had no authoring workflow.
+
+### Decision
+
+- Add one protected Sample content screen with individual remove/restore actions
+  across all four editorial sections.
+- Keep samples as a reversible launch layer while merging real promoted content;
+  database entries take priority on matching public keys.
+- Remove the Film-only content-mode switch and fail closed when production
+  visibility state cannot be read, preventing deleted samples from unexpectedly
+  returning.
+- Build a section-specific Projections editor on the established working-
+  revision and immutable-publication architecture.
+
+### User benefit
+
+The client can onboard gradually: publish real work without losing the remaining
+portfolio presentation, remove each sample when ready, and restore an accidental
+removal. Projections now follows the same understandable save/publish safety
+model as the other editorial sections.
+
+### Evidence and validation
+
+- Supabase migration dry run passed and the migration applied successfully.
+- Public Films and Projections loaders returned both database and visible sample
+  content without duplicate matching keys.
+- Browser QA confirmed the protected navigation, sample-management surface, and
+  hydrated Projections editor controls.
+- `npm run typecheck` and `npm run build` passed.
+
+### Portfolio signal
+
+Demonstrates a reversible content-migration strategy, safe client onboarding,
+and reuse of a mature publishing architecture without flattening distinct
+editorial products into one generic CMS form.

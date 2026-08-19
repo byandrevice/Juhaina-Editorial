@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  orderedProjectionEssays,
   projectionPublicationDate,
+  type ProjectionEssay,
 } from "@/lib/projection-essays";
 
 const sectionLinks = [
@@ -12,8 +12,7 @@ const sectionLinks = [
   { href: "/lists", label: "Lists" },
 ];
 
-export function ProjectionIndex() {
-  const essays = orderedProjectionEssays().slice(0, 6);
+export function ProjectionIndex({ essays }: { essays: ProjectionEssay[] }) {
 
   return (
     <div className="projection-index">
@@ -36,7 +35,7 @@ export function ProjectionIndex() {
 
       <main className="projection-main">
         <h1>Projections</h1>
-        <ul className="projection-grid">
+        {essays.length ? <ul className="projection-grid">
           {essays.map((essay, index) => (
             <li key={essay.slug}>
               <article className="projection-entry">
@@ -55,6 +54,8 @@ export function ProjectionIndex() {
                       fetchPriority={index < 2 ? "high" : "auto"}
                       style={{
                         objectPosition: `${essay.still.focalX * 100}% ${essay.still.focalY * 100}%`,
+                        transform: `scale(${essay.still.zoom ?? 1})`,
+                        transformOrigin: `${essay.still.focalX * 100}% ${essay.still.focalY * 100}%`,
                       }}
                     />
                   </span>
@@ -76,7 +77,7 @@ export function ProjectionIndex() {
               </article>
             </li>
           ))}
-        </ul>
+        </ul> : <p className="projection-empty">No projections are published yet.</p>}
       </main>
 
       <footer className="projection-footer">

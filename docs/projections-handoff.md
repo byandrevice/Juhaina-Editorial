@@ -84,16 +84,18 @@ authoring/backend vertical slice is still unbuilt.
 - Recommended source upload remains at least **1600 × 900px**; the desktop
   frame crops it to 4:3 using the authored focal point.
 
-### Still unbuilt
+### Authoring backend
 
-- Projections remains marked `Later` in the protected admin navigation and is
-  a non-interactive `Coming later` dashboard card.
-- There are no Projection database tables, migrations, Supabase queries,
-  server data loaders, API routes, admin library/new/edit routes, editor,
-  local recovery module, remote asset workflow, or publication RPC.
-- Public content currently comes from local fixtures rather than promoted,
-  immutable revisions. Draft privacy has not yet been exercised for this
-  section.
+- Projections is active in the protected admin navigation and dashboard.
+- `202608190001_projections_and_sample_content.sql` adds posts, revisions,
+  immutable publication snapshots, RLS, public asset checks, and the
+  `publish_projection` RPC.
+- `/admin/projections` provides library, new, and edit routes with browser
+  recovery, private image upload, focal controls, validated rich text, explicit
+  publishing, unpublishing, and archiving.
+- Public index and reader routes merge promoted Supabase content with any
+  launch samples that remain visible in `/admin/samples`. Database content wins
+  on matching slugs.
 - The homepage portal remains complete and links to `/projections`; its
   approved cigarette-box object was not changed.
 

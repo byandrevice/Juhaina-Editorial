@@ -1,4 +1,4 @@
-import { ArrowSquareOut, House, Images, ListBullets, Newspaper, SignOut } from "@phosphor-icons/react/dist/ssr";
+import { ArrowSquareOut, EyeSlash, House, Images, ListBullets, Newspaper, NotePencil, SignOut } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getAdminIdentity } from "@/lib/admin/auth";
@@ -16,8 +16,9 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
             <Link href="/admin"><House aria-hidden="true" /> Overview</Link>
             <Link href="/admin/films"><Newspaper aria-hidden="true" /> Film Thoughts</Link>
             <Link href="/admin/moodboards"><Images aria-hidden="true" /> Moodboards</Link>
+            <Link href="/admin/projections"><NotePencil aria-hidden="true" /> Projections</Link>
             <Link href="/admin/lists"><ListBullets aria-hidden="true" /> Lists</Link>
-            <span aria-disabled="true"><ListBullets aria-hidden="true" /> Projections <small>Later</small></span>
+            <Link href="/admin/samples"><EyeSlash aria-hidden="true" /> Sample content</Link>
           </nav>
         </div>
         <div className="admin-sidebar__footer">

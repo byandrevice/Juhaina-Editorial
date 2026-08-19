@@ -1,5 +1,6 @@
 import type { JSONContent } from "@tiptap/react";
 import { filmEssays, orderFilmEssays, type FilmEssay } from "./film-essays";
+import { getHiddenFixtureKeys } from "./fixture-visibility";
 import { hasSupabaseConfig } from "./supabase/config";
 import { createPublicClient } from "./supabase/public";
 
@@ -28,13 +29,13 @@ async function coverUrl(path: string | undefined) {
 }
 
 export async function getPublishedFilmEssays(): Promise<PublishedFilmEssay[]> {
-  if (!hasSupabaseConfig()) return orderFilmEssays(filmEssays);
+  if (!hasSupabaseConfig()) return [];
   const supabase = createPublicClient();
   const { data: posts, error } = await supabase
     .from("film_posts")
     .select("slug, published_revision_id")
     .in("status", ["published", "published_with_changes"]);
-  if (error || !posts?.length) return orderFilmEssays(filmEssays);
+  if (error || !posts?.length) return [];
 
   const essays = await Promise.all(posts.map(async (post) => {
     const { data } = await supabase
@@ -69,11 +70,15 @@ export async function getPublishedFilmEssay(slug: string) {
 }
 
 export async function getPublicFilmEssays(): Promise<PublishedFilmEssay[]> {
-  if (process.env.FILMS_CONTENT_MODE !== "published") {
-    return orderFilmEssays(filmEssays);
-  }
-
-  return getPublishedFilmEssays();
+  if (!hasSupabaseConfig()) return orderFilmEssays(filmEssays);
+  const [published, hidden] = await Promise.all([
+    getPublishedFilmEssays(),
+    getHiddenFixtureKeys("films"),
+  ]);
+  if (!hidden) return orderFilmEssays(published);
+  const publishedSlugs = new Set(published.map((essay) => essay.slug));
+  const samples = filmEssays.filter((essay) => !hidden.has(essay.slug) && !publishedSlugs.has(essay.slug));
+  return orderFilmEssays([...published, ...samples]);
 }
 
 export async function getPublicFilmEssay(slug: string) {

@@ -12,6 +12,7 @@ export type ProjectionEssay = {
     alt: string;
     focalX: number;
     focalY: number;
+    zoom?: number;
   };
 };
 

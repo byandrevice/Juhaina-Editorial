@@ -344,3 +344,38 @@ Last updated: 2026-08-14
   1440px, checked the 390px mobile composition, navigated into a reader route,
   confirmed no overflow or console errors, and passed typecheck and production
   build. See `design-qa.md`.
+
+## D-019 — Database content plus individually removable launch samples
+
+- Status: Implemented on 2026-08-19.
+- Decision: Treat the portfolio fixtures as a separately managed sample layer,
+  not as uploaded client posts. Real published Supabase content and visible
+  samples may coexist. A protected Sample content screen lets the author remove
+  or restore each sample independently across Films, Lists, Moodboards, and
+  Projections.
+- Data behavior: A sample is visible when it has no hidden record in
+  `fixture_visibility`. Removing a sample creates an authenticated tombstone;
+  restoring it removes that tombstone. Published database content wins when it
+  shares the same public key as a sample.
+- Failure behavior: When production Supabase is configured but sample
+  visibility cannot be read, public loaders fail closed to database content
+  rather than unexpectedly restoring removed portfolio samples.
+- Reason: Bundled examples should remain useful during client onboarding but
+  must never be mistaken for editable database rows or overwrite client work.
+  Individual visibility records provide reversible cleanup without duplicating
+  placeholder media into private Storage.
+
+## D-020 — Projections authoring model
+
+- Status: Implemented on 2026-08-19.
+- Decision: Projections reuses the proven mutable-working-revision and immutable
+  published-snapshot architecture from Films while retaining section-specific
+  fields and public design.
+- Fields: headline, subheader, Tiptap body, cover image, image description,
+  focal position, zoom, subject, creator/source, subject year, reading time, and
+  publication date.
+- Workflow: browser recovery → save draft → explicit publish → edit working
+  revision → republish, unpublish, or archive. Only promoted revisions and their
+  cover assets are publicly readable.
+- Reason: The client needs the reliability of the existing editorial backend
+  without collapsing four distinct editorial formats into one generic editor.

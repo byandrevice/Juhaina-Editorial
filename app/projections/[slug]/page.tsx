@@ -2,26 +2,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
+import { RichTextDocument } from "@/components/rich-text-document";
 import { filmArticleParagraphs } from "@/lib/film-article-content";
 import {
-  projectionEssays,
   projectionPublicationDate,
 } from "@/lib/projection-essays";
+import { getPublicProjectionEssay } from "@/lib/projections-data";
 import styles from "./reader.module.css";
 
 type ProjectionArticlePageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return projectionEssays.map(({ slug }) => ({ slug }));
-}
-
 export default async function ProjectionArticlePage({
   params,
 }: ProjectionArticlePageProps) {
   const { slug } = await params;
-  const essay = projectionEssays.find((candidate) => candidate.slug === slug);
+  const essay = await getPublicProjectionEssay(slug);
 
   if (!essay) notFound();
 
@@ -44,6 +41,8 @@ export default async function ProjectionArticlePage({
             priority
             style={{
               objectPosition: `${essay.still.focalX * 100}% ${essay.still.focalY * 100}%`,
+              transform: `scale(${essay.still.zoom ?? 1})`,
+              transformOrigin: `${essay.still.focalX * 100}% ${essay.still.focalY * 100}%`,
             }}
           />
         </figure>
@@ -70,7 +69,7 @@ export default async function ProjectionArticlePage({
             </header>
 
             <div className={styles.bodyCopy}>
-              {filmArticleParagraphs.slice(0, 13).map((paragraph, index) => (
+              {essay.body ? <RichTextDocument document={essay.body} /> : filmArticleParagraphs.slice(0, 13).map((paragraph, index) => (
                 <Fragment key={paragraph}>
                   {index === 5 ? (
                     <blockquote>

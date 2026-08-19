@@ -60,6 +60,18 @@ export function FilmContentList() {
     setDeleting("");
   }
 
+  async function changeStatus(post: RemotePost, status: "unpublished" | "archived") {
+    const key = `${status}:${post.id}`;
+    setDeleting(key); setError("");
+    const response = await fetch(`/api/admin/films/${post.id}/status`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }),
+    });
+    const result = await response.json();
+    if (!response.ok) setError(result.error ?? "That change could not be completed.");
+    else setRemote((current) => current.map((entry) => entry.id === post.id ? { ...entry, status } : entry));
+    setConfirming(""); setDeleting("");
+  }
+
   async function deleteRecoveryDraft(draft: LocalDraftSummary) {
     const key = `local:${draft.key}`;
     setDeleting(key);
@@ -91,6 +103,9 @@ export function FilmContentList() {
             <div className="admin-content-row__actions">
               {canDelete && confirming !== key ? <button type="button" className="admin-text-action admin-text-action--danger" onClick={() => setConfirming(key)}>Delete draft</button> : null}
               {canDelete && confirming === key ? <div className="admin-delete-confirm"><span>Delete?</span><Button size="small" variant="danger" type="button" disabled={deleting === key} onClick={() => deleteRemoteDraft(post)}>{deleting === key ? "Deleting…" : "Yes"}</Button><button type="button" onClick={() => setConfirming("")}>Cancel</button></div> : null}
+              {post.status.startsWith("published") ? <button type="button" onClick={() => setConfirming(`unpublished:${post.id}`)}>Unpublish</button> : null}
+              {post.status !== "archived" && post.status !== "draft" ? <button type="button" onClick={() => setConfirming(`archived:${post.id}`)}>Archive</button> : null}
+              {confirming === `unpublished:${post.id}` || confirming === `archived:${post.id}` ? <div className="admin-delete-confirm"><span>Are you sure?</span><Button size="small" type="button" disabled={deleting === confirming} onClick={() => changeStatus(post, confirming.split(":")[0] as "unpublished" | "archived")}>{deleting === confirming ? "Working…" : "Yes"}</Button><button type="button" onClick={() => setConfirming("")}>Cancel</button></div> : null}
             </div>
           </div>
         );

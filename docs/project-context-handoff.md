@@ -106,26 +106,23 @@ This file is the durable source of truth for continuing the project after a cont
 - Fullscreen editing uses the native fullscreen canvas. A compact, draggable inspector contains background, layers, image-add, visibility, locking, numeric controls, and undo.
 - Category dropdown choices update after category edits.
 
-## Current focus: Projections
+## Current content-management state
 
-Moodboards is complete for the current release scope, including full-screen
-zoom, bounded panning, full-row layer sorting, draft recovery, and a compact
-draggable Canvas Controls palette. `npm run typecheck` and `npm run build`
-passed after the final changes.
+Films, Lists, Moodboards, and Projections now share one protected Supabase-backed
+administration workspace while retaining section-specific editors and public
+designs. Projections includes database tables, RLS, private image upload,
+browser recovery, draft saving, immutable publication snapshots, public data
+loading, unpublishing, and archiving.
 
-Important local-state caution:
+Portfolio fixtures remain bundled as a reversible sample-content layer. The
+author can remove or restore each entry from `/admin/samples`; real published
+content coexists with any samples that remain visible and wins on matching
+public keys. Do not reintroduce `FILMS_CONTENT_MODE` or automatic all-or-nothing
+fixture replacement.
 
-- The current local moodboard draft contains three layers. Do not delete it or
-  overwrite its browser storage while testing other areas.
-
-The current subsite is Projections. Its approved R1 paired-column public index
-and six fixture reader routes are now implemented, responsive, and
-browser-verified. The Projection database, APIs, protected admin library/editor,
-draft recovery, asset workflow, publication system, and promoted-revision data
-adapter remain unbuilt. Start with `docs/projections-handoff.md`; it contains
-the implemented files and evidence, locked public direction, remaining content
-model decisions, next build order, acceptance checklist, and safe deployment
-context.
+Important local-state caution: preserve unrelated browser recovery drafts when
+testing. Removing a launch sample changes only its Supabase visibility record;
+it does not delete local media files or real editorial posts.
 
 ## Deferred version 2 work
 

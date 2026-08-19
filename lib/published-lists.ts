@@ -1,4 +1,5 @@
 import { getFallbackLists, type ArtworkRatio, type ListCollection } from "./lists-data";
+import { getHiddenFixtureKeys } from "./fixture-visibility";
 import { hasSupabaseConfig } from "./supabase/config";
 import { createPublicClient } from "./supabase/public";
 
@@ -30,12 +31,15 @@ type PublishedItem = {
 
 export async function getPublishedListCollections(): Promise<ListCollection[]> {
   if (!hasSupabaseConfig()) return getFallbackLists();
+  const hidden = await getHiddenFixtureKeys("lists");
+  if (!hidden) return [];
+  const samples = getFallbackLists().filter((list) => !hidden.has(`${list.typeSlug}:${list.periodSlug}`));
   try {
     const supabase = createPublicClient();
     const { data: posts, error } = await supabase.from("list_posts")
       .select("id, slug, published_revision_id")
       .in("status", ["published", "published_with_changes"]);
-    if (error || !posts?.length) return getFallbackLists();
+    if (error || !posts?.length) return samples;
 
     const revisionIds = posts.map((post) => post.published_revision_id).filter(Boolean) as string[];
     const [{ data: revisions }, { data: items }] = await Promise.all([
@@ -47,7 +51,7 @@ export async function getPublishedListCollections(): Promise<ListCollection[]> {
         .in("revision_id", revisionIds)
         .order("position"),
     ]);
-    if (!revisions?.length) return getFallbackLists();
+    if (!revisions?.length) return samples;
 
     const paths = new Set((items ?? []).map((item) => (item.assets as unknown as { storage_path?: string } | null)?.storage_path).filter(Boolean) as string[]);
     const signed = new Map<string, string>();
@@ -57,7 +61,7 @@ export async function getPublishedListCollections(): Promise<ListCollection[]> {
     }));
 
     const postByRevision = new Map(posts.map((post) => [post.published_revision_id, post]));
-    return (revisions as PublishedRevision[]).map((revision) => {
+    const published = (revisions as PublishedRevision[]).map((revision) => {
       const post = postByRevision.get(revision.id);
       return {
         id: post?.id,
@@ -89,7 +93,9 @@ export async function getPublishedListCollections(): Promise<ListCollection[]> {
         }),
       };
     });
+    const publishedKeys = new Set(published.map((list) => `${list.typeSlug}:${list.periodSlug}`));
+    return [...published, ...samples.filter((list) => !publishedKeys.has(`${list.typeSlug}:${list.periodSlug}`))];
   } catch {
-    return getFallbackLists();
+    return samples;
   }
 }

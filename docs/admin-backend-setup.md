@@ -14,6 +14,11 @@ Last updated: 2026-08-14
   reorderable categories, safe category transfer, a fixed 16:9 layer editor,
   proportional resizing, free positioning, rotation, opacity, layer ordering,
   draft recovery, flattened previews, and revision-safe publishing.
+- A complete Projections vertical slice at `/admin/projections`, including
+  section-specific metadata, rich-text bodies, cover uploads, browser recovery,
+  immutable publication snapshots, unpublishing, and archiving.
+- A protected `/admin/samples` screen that removes or restores each bundled
+  portfolio sample independently without changing real client content.
 - Email magic-link authentication with public registration disabled at the app
   layer (`shouldCreateUser: false`).
 - A single allowlisted author enforced in the database with row-level security.
@@ -34,8 +39,9 @@ Last updated: 2026-08-14
 2. In the Supabase SQL editor, run
    `supabase/migrations/202608110001_films_admin.sql`.
    Then run `supabase/migrations/202608130001_lists_admin.sql` to activate Lists.
-   Then run `supabase/migrations/202608140001_moodboards_admin.sql` to activate
-   Moodboards.
+Then run `supabase/migrations/202608140001_moodboards_admin.sql` to activate
+   Moodboards, followed by
+   `supabase/migrations/202608190001_projections_and_sample_content.sql`.
 3. In Authentication, create Juhaina's user with her approved email address.
    Do not enable public self-registration.
 4. Run the final allowlist statement from the bottom of the migration, replacing
