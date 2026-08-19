@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FilmIndex } from "@/components/film-index";
-import { getPublishedFilmEssays } from "@/lib/films-data";
+import { ProjectionIndex } from "@/components/projection-index";
+import { getPublicFilmEssays } from "@/lib/films-data";
 
 const sections = new Set(["films", "projections"]);
 
@@ -21,14 +21,9 @@ export default async function SectionPage({ params }: SectionPageProps) {
   }
 
   if (section === "films") {
-    const essays = await getPublishedFilmEssays();
+    const essays = await getPublicFilmEssays();
     return <FilmIndex essays={essays} />;
   }
 
-  return (
-    <main className="section-placeholder">
-      <p>{section}</p>
-      <Link href="/">back to second viewing</Link>
-    </main>
-  );
+  return <ProjectionIndex />;
 }

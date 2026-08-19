@@ -67,3 +67,16 @@ export async function getPublishedFilmEssay(slug: string) {
   const essays = await getPublishedFilmEssays();
   return essays.find((essay) => essay.slug === slug) ?? null;
 }
+
+export async function getPublicFilmEssays(): Promise<PublishedFilmEssay[]> {
+  if (process.env.FILMS_CONTENT_MODE !== "published") {
+    return orderFilmEssays(filmEssays);
+  }
+
+  return getPublishedFilmEssays();
+}
+
+export async function getPublicFilmEssay(slug: string) {
+  const essays = await getPublicFilmEssays();
+  return essays.find((essay) => essay.slug === slug) ?? null;
+}

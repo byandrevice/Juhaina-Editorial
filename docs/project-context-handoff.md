@@ -1,6 +1,6 @@
 # Second Viewing — Project Context Handoff
 
-Last updated: August 15, 2026
+Last updated: August 16, 2026
 
 This file is the durable source of truth for continuing the project after a context reset. Read it together with `AGENTS.md` before making changes.
 
@@ -106,81 +106,26 @@ This file is the durable source of truth for continuing the project after a cont
 - Fullscreen editing uses the native fullscreen canvas. A compact, draggable inspector contains background, layers, image-add, visibility, locking, numeric controls, and undo.
 - Category dropdown choices update after category edits.
 
-## Most recent Moodboard editor work
+## Current focus: Projections
 
-Primary files:
-
-- `components/admin/moodboard-editor.tsx`
-- `app/globals.css`
-- `docs/portfolio-ux-ui-log.md`
-
-Implemented canvas zoom:
-
-- Two-finger touch pinch and trackpad pinch via Ctrl-wheel.
-- Scale range: 0.6× to 4×.
-- Zoom preserves the gesture focal point.
-- The stage uses `translate3d(x, y, 0) scale(scale)`.
-- Fullscreen status shows `Pinch or use a trackpad to zoom · X%`.
-- Entering or leaving fullscreen resets the view to 100%.
-- `constrainCanvasView()` already clamps the current translation using the stage and viewport measurements.
-
-Implemented layer sorting:
-
-- The entire layer row is draggable except explicit visibility and lock controls.
-- Reordering is visible continuously while the pointer crosses row midpoints.
-- The moving row gets a raised `.is-dragging` state.
-- A drag creates one undo-history entry; cancellation restores the prior order.
-- This works in both normal and fullscreen inspectors.
-
-Validation completed after this work:
-
-- `npm run typecheck` passed.
-- `npm run build` passed.
-- Whole-row sorting was browser-tested with three layers and the original order was restored afterward.
-- The fullscreen zoom interface was browser-tested. Automated browser control could not physically simulate a true pinch gesture, but the touch and Ctrl-wheel paths compile and are wired.
+Moodboards is complete for the current release scope, including full-screen
+zoom, bounded panning, full-row layer sorting, draft recovery, and a compact
+draggable Canvas Controls palette. `npm run typecheck` and `npm run build`
+passed after the final changes.
 
 Important local-state caution:
 
-- The current local moodboard draft contains three layers. Do not delete it or overwrite its browser storage while testing.
+- The current local moodboard draft contains three layers. Do not delete it or
+  overwrite its browser storage while testing other areas.
 
-## Exact next task: constrained canvas panning
-
-Add navigation around the canvas while it is zoomed in.
-
-Required outcome:
-
-- The user can pan around a zoomed canvas.
-- Panning must never move the canvas beyond its visible frame and reveal empty space outside the canvas.
-- Panning must not interfere with single-pointer image/layer dragging.
-- At 100% or whenever an axis of the scaled canvas fits inside the viewport, that axis should remain centered and should not pan.
-- Keep pinch-to-zoom focal behavior intact.
-
-Recommended interaction model:
-
-- Touch: two-finger movement pans while two-finger distance continues to control zoom.
-- Trackpad: two-finger scrolling pans when zoomed above 100%; Ctrl-wheel remains pinch zoom.
-- Mouse: Space + drag or middle-mouse drag pans the canvas, so an ordinary drag remains reserved for moving a selected layer.
-- Provide a grabbing cursor only while the explicit pan gesture is active.
-
-Constraint basis:
-
-```text
-maxX = max(0, (scaledCanvasWidth - viewportWidth) / 2)
-maxY = max(0, (scaledCanvasHeight - viewportHeight) / 2)
-x = clamp(x, -maxX, maxX)
-y = clamp(y, -maxY, maxY)
-```
-
-Account for the current stage fit and viewport padding rather than assuming the raw canvas always fills the fullscreen viewport. Reuse or extend `constrainCanvasView()` so resize, zoom, and pan all share the same boundary logic.
-
-After implementation:
-
-- Test touch/trackpad behavior if possible.
-- Test Space-drag or middle-mouse behavior separately from layer dragging.
-- Test every edge and corner at multiple zoom levels.
-- Test viewport resizing while panned.
-- Run typecheck and production build.
-- Add the UX decision to `docs/portfolio-ux-ui-log.md`.
+The current subsite is Projections. Its approved R1 paired-column public index
+and six fixture reader routes are now implemented, responsive, and
+browser-verified. The Projection database, APIs, protected admin library/editor,
+draft recovery, asset workflow, publication system, and promoted-revision data
+adapter remain unbuilt. Start with `docs/projections-handoff.md`; it contains
+the implemented files and evidence, locked public direction, remaining content
+model decisions, next build order, acceptance checklist, and safe deployment
+context.
 
 ## Deferred version 2 work
 

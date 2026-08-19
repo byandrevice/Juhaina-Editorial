@@ -63,6 +63,16 @@ const cardo = localFont({
   fallback: ["Georgia", "serif"],
 });
 
+const archivo = localFont({
+  src: "../node_modules/@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2",
+  variable: "--font-archivo",
+  display: "swap",
+  weight: "400 500",
+  fallback: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+  adjustFontFallback: "Arial",
+  preload: true,
+});
+
 export const metadata: Metadata = {
   title: "Second Viewing",
   description:
@@ -72,7 +82,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${ppMori.variable} ${cardo.variable}`}>
+      <body className={`${ppMori.variable} ${cardo.variable} ${archivo.variable}`}>
         {children}
       </body>
     </html>

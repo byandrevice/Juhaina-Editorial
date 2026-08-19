@@ -319,3 +319,28 @@ Last updated: 2026-08-14
   1600 × 800, 1024 × 600, and 390 × 800 CSS pixels. The measured label-to-stack
   clearance is 61.75px, 21.02px, and 126.16px respectively, with no overlap,
   browser warnings, or console errors.
+
+## D-018 — Projections R1 public index direction
+
+- Status: Supplied by owner and implemented on 2026-08-16.
+- Decision: Projections uses the R1 paired-column index on a permanent `#2B2B2B`
+  ground. Six newest entries receive equal weight. Each desktop entry pairs a
+  square-cornered 4:3 image with a space-between text column; the layout becomes
+  one image-left column below 1000px and a 16:9 stacked list below 820px.
+- Typography: Self-host Archivo for this section, using regular and medium
+  weights only. Preserve the restrained white/gray hierarchy and let editorial
+  images provide the only color.
+- Interaction: The whole entry is one link with a title-only accessible name.
+  Hover only underlines the title; keyboard focus outlines the full entry. No
+  filters, featured treatment, cards, animation, light mode, or accent color.
+- Product adaptation: Use the four real Second Viewing sections in navigation
+  and mark Projections active. Treat the supplied Films/Books/Notebook/Index/
+  About labels and `/films` examples as wireframe residue rather than changing
+  the approved site architecture or Film Thoughts implementation.
+- Content boundary: The current six film-oriented entries and existing images
+  are representative public fixtures. They establish rendering and responsive
+  behavior but do not create or approve the eventual Projection database schema.
+- Validation: Compared the normalized source and browser implementation at
+  1440px, checked the 390px mobile composition, navigated into a reader route,
+  confirmed no overflow or console errors, and passed typecheck and production
+  build. See `design-qa.md`.

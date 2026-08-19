@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { filmArticleParagraphs } from "@/lib/film-article-content";
 import { formatPublicationDate } from "@/lib/film-essays";
-import { getPublishedFilmEssay, getPublishedFilmEssays } from "@/lib/films-data";
+import { getPublicFilmEssay, getPublicFilmEssays } from "@/lib/films-data";
 import { RichTextDocument } from "@/components/rich-text-document";
 
 type FilmArticlePageProps = {
@@ -15,11 +15,11 @@ export default async function FilmArticlePage({
   params,
 }: FilmArticlePageProps) {
   const { slug } = await params;
-  const essay = await getPublishedFilmEssay(slug);
+  const essay = await getPublicFilmEssay(slug);
 
   if (!essay) notFound();
 
-  const relatedEssays = (await getPublishedFilmEssays())
+  const relatedEssays = (await getPublicFilmEssays())
     .filter((candidate) => candidate.slug !== essay.slug)
     .slice(0, 4);
 

@@ -28,6 +28,7 @@ function EssayImage({ essay }: { essay: FilmEssay }) {
             src={essay.imageSrc}
             alt=""
             fill
+            priority={essay.featured}
             sizes="(max-width: 819px) 100vw, 50vw"
             className="film-essay__image-file"
             style={{

@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@fontsource-variable/archivo": "^5.2.8",
     "@fontsource/anybody": "5.3.0",
     "@fontsource/bodoni-moda": "^5.3.0",
     "@fontsource/cormorant-garamond": "^5.3.0",

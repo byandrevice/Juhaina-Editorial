@@ -1247,3 +1247,230 @@ rotation, opacity, visibility, lock, add, and undo controls stay close at hand.
 
 Shows iterative density tuning for a tool palette and preservation of spatial
 drag constraints after a substantial component resize.
+
+## 2026-08-16 — Projections paired-column editorial index
+
+### Problem
+
+The final unbuilt subsite needed a distinct public index that could hold six
+essays without importing Film Thoughts' calm white card language or assigning
+an unrequested featured hierarchy.
+
+### Decision
+
+- Build a full-width, two-column editorial grid on a permanent `#2B2B2B`
+  ground, with every entry using the same 340 × 255 image and text structure.
+- Pin each excerpt to the image baseline with a space-between text column so
+  rhythm comes from content structure rather than one-off offsets.
+- Self-host Archivo and use only white plus three accessible gray levels; real
+  editorial imagery supplies the page's color.
+- Preserve the wide inter-column gap, square imagery, and title-only hover.
+  Avoid cards, badges, buttons, imagery effects, and motion.
+- Adapt wireframe navigation to the four actual Second Viewing sections and
+  keep all entry URLs Projection-specific so Film Thoughts remains untouched.
+- Stack the image at 16:9 on mobile, put the identity above a visible navigation
+  row, retain 44px targets, and keep each entry to one keyboard stop.
+
+### User benefit
+
+Readers can scan six essays with equal editorial weight, move directly into an
+article, and retain the same clear hierarchy on phone and desktop. The client
+gets a visually distinctive section without learning a new interaction model.
+
+### Evidence and validation
+
+- Browser-measured the 1440px composition: 40px page insets, two 650px tracks,
+  60px column gap, 340 × 255 images, and 40px row gaps.
+- Compared the source and final implementation in a single normalized image and
+  repeated the check on a focused header/first-row crop.
+- At 390 × 844, confirmed a 390px document width, 358 × 201.375 first image,
+  44px navigation targets, and no horizontal overflow.
+- Confirmed six authored alt descriptions, one h1, six h2s, six single-link
+  entries, a working reader route, and no browser console errors.
+- `npm run typecheck` and `npm run build` passed; `design-qa.md` records the
+  complete comparison and final passed result.
+
+### Portfolio signal
+
+Shows high-fidelity screenshot translation, equal-weight editorial hierarchy,
+responsive art direction, semantic whole-entry linking, local font delivery,
+image-alt authorship, and evidence-driven visual QA inside an existing product.
+
+## 2026-08-16 — Seven comparable Projections reader studies
+
+### Problem
+
+The client had approved the Projections index but had not selected an article
+layout. Seven editorial references contained useful but substantially different
+reading systems, making a prose-only comparison too abstract.
+
+### Decision
+
+- Build seven isolated reader studies using one title, excerpt, article body,
+  metadata set, and editorial still so structural differences remain legible.
+- Translate each reference's defining system—split opener, centered literary
+  essay, metadata sidebar, image/title diptych, high-impact color field,
+  monumental modular news layout, and narrow culture dispatch—without copying
+  unrelated publication chrome.
+- Omit all inline article images and third-party modules. Keep lead imagery at
+  Projections' 4:3 desktop and 16:9 mobile ratios, with the type-led Signal
+  direction retaining the reference's intentional no-image opener.
+- Provide a comparison gallery and persistent numbered switcher so the client
+  can move between studies without returning to production article routes.
+
+### User benefit
+
+The client can compare seven working reading experiences against identical
+content, judge hierarchy and reading character directly on desktop and phone,
+and select or combine a direction without disturbing the approved public index.
+
+### Evidence and validation
+
+- Browser-captured every study at 1440 × 1000 and 390 × 844 and stored one
+  source-versus-implementation comparison per direction.
+- Measured every image-bearing study at 1.333 on desktop and 1.778 on mobile;
+  all document scroll widths matched their viewports.
+- Verified gallery-to-study and study-to-gallery navigation, semantic headings,
+  authored alt text, active-study state, visible focus treatment, no inline body
+  images, and a clean browser console after fixes.
+- `npm run typecheck` and `npm run build` passed; `design-qa.md` records the
+  iteration history and final passed result.
+
+### Portfolio signal
+
+Shows multi-reference editorial synthesis, controlled content comparison,
+responsive art direction, typography-led differentiation, accessible
+comparison navigation, and evidence-based design QA before client selection.
+
+## 2026-08-18 — Persistent color lab for reader studies
+
+### Problem
+
+Seven article layouts were ready for client comparison, but their reference-
+derived colors made it difficult to judge palette independently from structure.
+The designer needed to apply the same candidate pairs across every layout and
+move between studies without losing the active choice.
+
+### Decision
+
+- Add one reusable color-lab shell to all seven study routes with the seven
+  supplied background/text pairs plus the Projections home gray/white pair.
+- Present each pair as an actual `Aa` foreground-on-background swatch, with
+  direct selection, wrapping previous/next controls, and a live background-
+  first hex readout.
+- Persist the selected palette locally and reflect it in the query string so
+  changing article structure does not reset the color comparison.
+- Treat the invalid supplied `#66FFCS` as the clearly labelled working
+  assumption `#66FFC5`, keeping the ambiguity visible until confirmed.
+- Keep the ideation controls visually neutral and outside the production index
+  and reader routes.
+
+### User benefit
+
+The designer can separate color judgment from layout judgment, scan all eight
+pairs on any reader, then switch article structures while preserving the active
+palette. A future client review can reproduce a chosen state from its URL.
+
+### Evidence and validation
+
+- Browser-cycled through all eight palettes and confirmed exact computed color
+  values, one active pressed state, URL updates, and wraparound to Home.
+- Confirmed Color 6 persisted from Chorus to Literary and all seven studies
+  rendered Color 2 without horizontal overflow or console warnings.
+- Calculated contrast ratios from 6.59:1 to 16.57:1 across the complete set.
+- At 390 × 844, measured 44 × 44px minimum controls, a 366px dock within 12px
+  insets, an internally scrolling swatch rail, and no document overflow.
+- `npm run typecheck` and `npm run build` passed; `design-qa.md` records the
+  comparison, iteration, and final passed result.
+
+### Portfolio signal
+
+Shows controlled design-variable testing, accessible color comparison,
+stateful cross-route prototyping, explicit ambiguity handling, contrast
+validation, and mobile utility design that preserves the underlying artifact.
+
+## 2026-08-18 — Film Reviews mock-content mode
+
+### Problem
+
+The public Film Reviews subsite was reading directly from the configured
+publishing backend, so a partial test publication could replace the complete
+six-review portfolio fixture set on the mock site.
+
+### Decision
+
+- Make the public `/films` index and article routes use the six curated film
+  fixtures by default.
+- Keep the publishing data path intact behind `FILMS_CONTENT_MODE=published`
+  so the site can switch to authored content without another code change.
+- Apply the same content mode to related-review cards so index, article, and
+  recommendation states remain internally consistent.
+
+### User benefit
+
+The portfolio-facing mock site now presents a complete, intentional Film
+Reviews experience while preserving a clean handoff to live editorial content.
+
+### Evidence and validation
+
+- Confirmed exactly six mock reviews on `/films` with no backend test entries.
+- Opened the Aftersun review and verified its full mock article plus four
+  related reviews.
+- `npm run typecheck` and `npm run build` passed.
+
+## 2026-08-18 — Final Projections reader direction
+
+### Problem
+
+Seven article structures and eight palettes were still presented as equal
+studies, while the production Projection routes retained an earlier generic
+reader. The client selection needed to become the real article experience.
+
+### Decision
+
+- Promote Study 3, the metadata-sidebar reader, to every public
+  `/projections/[slug]` route.
+- Lock the selected Color 1 pair: `#343839` background and `#FEFEFE` text.
+- Preserve the selected study's 180px metadata rail, 620px reading column,
+  4:3 desktop lead, 16:9 mobile lead, uppercase deck, and pull quote.
+- Remove study-navigation and palette controls from the production reader while
+  retaining the comparison lab for historical review.
+
+### User benefit
+
+Projection articles now have one coherent, client-approved reading system on
+desktop and mobile, while the experimentation space remains available without
+leaking into the public experience.
+
+### Evidence and validation
+
+- Browser comparison against the selected Sidebar study confirmed the same
+  image scale, metadata hierarchy, title wrapping, reading measure, and mobile
+  stacking order.
+- Browser-computed colors matched `rgb(52, 56, 57)` and
+  `rgb(254, 254, 254)` exactly.
+- The longest fixture title fit at 390px with no horizontal overflow; the mobile
+  lead measured exactly 16:9 and the browser console was clean.
+- `npm run typecheck` and `npm run build` passed.
+
+### Portfolio signal
+
+Shows disciplined convergence from multi-direction exploration to a production
+editorial system, including responsive validation and exact token handoff.
+
+## 2026-08-18 — Independent Mirror's Edge image direction
+
+### Decision
+
+- Replace all six Projection stills with the supplied Mirror's Edge image set.
+- Keep the existing article titles, excerpts, subjects, dates, and body copy
+  unchanged; the image layer is intentionally independent from the text layer.
+- Optimize the six strongest supplied sources as WebP assets and retain
+  authored, image-specific alternative text and focal positions.
+
+### Evidence and validation
+
+- Confirmed all six images load on the Projection index and the finalized
+  reader while all six existing titles and excerpts remain unchanged.
+- Browser console remained clean and `npm run typecheck` plus
+  `npm run build` passed.
