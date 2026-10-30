@@ -1,25 +1,9 @@
-import { HomePortal, type FontChoice } from "@/components/home-portal";
+import { HomePortal } from "@/components/home-portal";
+import { preload } from "react-dom";
 
-type HomePageProps = {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-};
-
-const fontChoices: FontChoice[] = ["syne-tactile", "syne-mono", "ncl-bhagnes"];
-
-export default async function HomePage({ searchParams }: HomePageProps) {
-  const params = await searchParams;
-  const requestedFont = Array.isArray(params.font) ? params.font[0] : params.font;
-  const initialFont = fontChoices.includes(requestedFont as FontChoice)
-    ? (requestedFont as FontChoice)
-    : "syne-mono";
-  const showTypeLab = params["type-lab"] === "1";
-  const captureScaleHalf = params.capture === "1";
-
-  return (
-    <HomePortal
-      initialFont={initialFont}
-      showTypeLab={showTypeLab}
-      captureScaleHalf={captureScaleHalf}
-    />
-  );
+// Review-only query parameters are read in the browser, keeping the public
+// homepage statically generated and cacheable at the CDN.
+export default function HomePage() {
+  preload("/images/portal-background.webp", { as: "image", fetchPriority: "high" });
+  return <HomePortal />;
 }

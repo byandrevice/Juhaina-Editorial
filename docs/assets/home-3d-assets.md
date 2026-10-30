@@ -3,6 +3,29 @@
 Status: runtime exports optimized on 2026-10-30. Current homepage pairings
 match `components/home-portal.tsx` and the project context handoff.
 
+## Immediate first appearance — 2026-10-30 follow-up
+
+Compression alone still left the objects waiting for JavaScript, WebGL, and
+model decoding. The homepage now embeds four transparent WebP renders of the
+actual models directly in its generated HTML. Their combined binary size is
+18,460 bytes. The first appearance has no dependency on a model request,
+JavaScript execution, or WebGL support. The existing 3D animation starts in
+the background after the previews have had a chance to paint, and replaces
+each preview only after a real model frame has rendered. Failed model loads
+leave the preview and navigation intact.
+
+The background is now a preloaded 46,256-byte WebP export instead of the
+1,193,227-byte PNG. The homepage is statically generated; review-only font,
+capture, and study query parameters are applied in the browser. Public routes
+skip session refresh, while admin/auth routes and admin-only site access
+retain their existing checks.
+
+Regenerate previews with `node scripts/render-home-posters.mjs`, then open
+`http://localhost:3010`. The local tool writes `lib/home-model-posters.ts`
+using the same GLBs, lighting, camera, normalization, initial rotation, and
+scale as the homepage. Stop the tool when done. See
+[first-paint validation](../audits/homepage-first-paint-2026-10-30/validation.md).
+
 ## Confirmed portal mapping
 
 - Films: VCR (Hanseatic VCR 200)
@@ -115,9 +138,8 @@ source should remain in project records.
 
 ## Remaining implementation work
 
-- Create a static fallback image for each asset.
-- Add a failure fallback for unavailable WebGL or failed model requests.
+- Create previews for any study alternatives that become published pairings.
 
 Routing, orientation, scale, rotation, early usable navigation, reduced-motion
-handling, and Meshopt decoding are already implemented. A failure fallback
-and static previews remain separate follow-up work.
+handling, Meshopt decoding, and static first-paint/failure previews for the
+four published pairings are implemented.

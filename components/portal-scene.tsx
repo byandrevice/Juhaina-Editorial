@@ -5,13 +5,14 @@ import { useGLTF } from "@react-three/drei";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Box3, Group, MathUtils, Vector3 } from "three";
 
-type PortalSceneProps = {
+export type PortalSceneProps = {
   src: string;
   rotation: [number, number, number];
   rotationPeriod: number;
   modelScale: number;
   cameraDistance?: number;
   active: boolean;
+  onReady?: () => void;
 };
 
 type ModelProps = PortalSceneProps & {
@@ -39,11 +40,13 @@ function Model({
   modelScale,
   active,
   reduceMotion,
+  onReady,
 }: ModelProps) {
   const { scene } = useGLTF(src);
   const spin = useRef<Group>(null);
   const shell = useRef<Group>(null);
   const baseScale = useRef(modelScale);
+  const frames = useRef(0);
 
   const normalized = useMemo(() => {
     const clone = scene.clone(true);
@@ -68,6 +71,14 @@ function Model({
   useFrame((state, delta) => {
     if (!spin.current || !shell.current) return;
 
+    // The loading hook resolving doesn't mean anything has reached the GPU.
+    // Show the canvas only after the model has actually rendered a frame.
+    if (frames.current < 2) {
+      if (frames.current++ === 1) onReady?.();
+      state.invalidate();
+      return;
+    }
+
     if (!reduceMotion) {
       const radiansPerSecond = (Math.PI * 2) / rotationPeriod;
       spin.current.rotation.y += delta * radiansPerSecond * (active ? 1.25 : 1);
@@ -81,7 +92,7 @@ function Model({
 
   return (
     <group ref={spin} rotation={rotation}>
-      <group ref={shell}>
+      <group ref={shell} scale={modelScale}>
         <group scale={normalized.scale}>
           <group position={[-normalized.center.x, -normalized.center.y, -normalized.center.z]}>
             <primitive object={normalized.object} />
@@ -100,6 +111,8 @@ export default function PortalScene({
 
   return (
     <Canvas
+      className="portal__canvas"
+      fallback={null}
       camera={{ position: [0, 0, cameraDistance], fov: 31, near: 0.01, far: 100 }}
       dpr={[1, 1.5]}
       frameloop={reduceMotion ? "demand" : "always"}

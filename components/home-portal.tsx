@@ -1,13 +1,9 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useState } from "react";
-
-const PortalScene = dynamic(() => import("./portal-scene"), {
-  ssr: false,
-  loading: () => null,
-});
+import { useEffect, useState } from "react";
+import { PortalModel } from "./portal-model";
+import { homeModelPosters } from "@/lib/home-model-posters";
 
 export type FontChoice = "syne-tactile" | "syne-mono" | "ncl-bhagnes";
 type RotationChoice = "slow" | "medium" | "fast";
@@ -24,12 +20,6 @@ type ModelId =
   | "video-walkman"
   | "nokia";
 
-type HomePortalProps = {
-  initialFont: FontChoice;
-  showTypeLab: boolean;
-  captureScaleHalf: boolean;
-};
-
 type PortalConfig = {
   id: PortalId;
   label: string;
@@ -42,6 +32,7 @@ type ModelOption = {
   id: ModelId;
   label: string;
   model: string;
+  poster?: string;
   rotation: [number, number, number];
   cameraDistance?: number;
   rotationPeriodMultiplier?: number;
@@ -52,6 +43,7 @@ const modelOptions: ModelOption[] = [
     id: "vcr",
     label: "Hanseatic VCR",
     model: "/models/home/vcr-hanseatic-vcr-200.glb",
+    poster: homeModelPosters.vcr,
     rotation: [-0.04, -0.2, 0],
     cameraDistance: 7.2,
     rotationPeriodMultiplier: 28 / 18,
@@ -60,12 +52,14 @@ const modelOptions: ModelOption[] = [
     id: "camellia",
     label: "Camellia flower",
     model: "/models/home/camellia-sasanqua-shishigashira.glb",
+    poster: homeModelPosters.camellia,
     rotation: [-0.2, -0.35, -0.04],
   },
   {
     id: "cigarette-box",
     label: "Cigarette box",
     model: "/models/home/cigarette-box.glb",
+    poster: homeModelPosters["cigarette-box"],
     rotation: [0.12, -0.35, 0.04],
   },
   {
@@ -96,6 +90,7 @@ const modelOptions: ModelOption[] = [
     id: "nokia",
     label: "PSX Nokia",
     model: "/models/home/candidates/psx-nokia.glb",
+    poster: homeModelPosters.nokia,
     rotation: [-0.08, -0.3, 0.03],
   },
 ];
@@ -173,14 +168,16 @@ const iconScaleOptions: Array<{ value: IconScaleChoice; label: string }> = [
   { value: "large", label: "Large · 115%" },
 ];
 
-export function HomePortal({
-  initialFont,
-  showTypeLab,
-  captureScaleHalf,
-}: HomePortalProps) {
-  const [font, setFont] = useState<FontChoice>(
-    initialFont === "ncl-bhagnes" ? "syne-mono" : initialFont,
-  );
+export function HomePortal() {
+  const [font, setFont] = useState<FontChoice>("syne-mono");
+  const [showTypeLab, setShowTypeLab] = useState(false);
+  const [captureScaleHalf, setCaptureScaleHalf] = useState(false);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("font") === "syne-tactile") setFont("syne-tactile");
+    setShowTypeLab(params.get("type-lab") === "1");
+    setCaptureScaleHalf(params.get("capture") === "1");
+  }, []);
   const [rotationSpeed, setRotationSpeed] =
     useState<RotationChoice>("fast");
   const [labelScale, setLabelScale] =
@@ -242,20 +239,19 @@ export function HomePortal({
               onFocus={() => setActivePortal(portal.id)}
               onBlur={() => setActivePortal(null)}
             >
-              <span className="portal__model" aria-hidden="true">
-                <PortalScene
-                  key={`${portal.id}-${selectedModel.id}`}
-                  src={selectedModel.model}
-                  rotation={selectedModel.rotation}
-                  rotationPeriod={
-                    rotationPeriod *
-                    (selectedModel.rotationPeriodMultiplier ?? 1)
-                  }
-                  modelScale={portal.modelScale}
-                  cameraDistance={selectedModel.cameraDistance}
-                  active={activePortal === portal.id}
-                />
-              </span>
+              <PortalModel
+                key={`${portal.id}-${selectedModel.id}`}
+                src={selectedModel.model}
+                poster={selectedModel.poster}
+                rotation={selectedModel.rotation}
+                rotationPeriod={
+                  rotationPeriod *
+                  (selectedModel.rotationPeriodMultiplier ?? 1)
+                }
+                modelScale={portal.modelScale}
+                cameraDistance={selectedModel.cameraDistance}
+                active={activePortal === portal.id}
+              />
               {portal.id === "moodboards" ? (
                 <span className="portal__label portal__label--mood" aria-hidden="true">
                   <span>mood</span>

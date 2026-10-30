@@ -1615,7 +1615,7 @@ textarea {
   overflow: hidden;
   isolation: isolate;
   background-color: #08130f;
-  background-image: url("/images/portal-background.png");
+  background-image: url("/images/portal-background.webp");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -1649,11 +1649,34 @@ textarea {
 }
 
 .portal__model {
-  display: block;
+  position: relative;
+  display: grid;
+  place-items: center;
   width: var(--model-width);
   height: var(--model-height);
   scale: var(--icon-scale, 1);
   transition: filter 220ms ease;
+}
+
+.portal__poster {
+  position: absolute;
+  block-size: 100%;
+  inline-size: auto;
+  max-inline-size: none;
+  pointer-events: none;
+}
+
+.portal__canvas {
+  grid-area: 1 / 1;
+  opacity: 0;
+}
+
+.portal__model[data-ready="true"] .portal__poster {
+  visibility: hidden;
+}
+
+.portal__model[data-ready="true"] .portal__canvas {
+  opacity: 1;
 }
 
 .portal__model canvas {
@@ -2609,7 +2632,7 @@ textarea {
   min-height: 100svh;
   place-content: center;
   gap: 1rem;
-  background: #08130f url("/images/portal-background.png") center / cover
+  background: #08130f url("/images/portal-background.webp") center / cover
     no-repeat;
   color: var(--paper);
   text-align: center;

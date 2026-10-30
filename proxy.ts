@@ -24,7 +24,11 @@ export async function proxy(request: NextRequest) {
     });
   }
 
-  if (!hasSupabaseConfig()) return NextResponse.next({ request });
+  // Only authoring/auth routes need a refreshed session. Public pages and
+  // their images/models must not wait on an authentication network request.
+  if (!isBackendRoute(request.nextUrl.pathname) || !hasSupabaseConfig()) {
+    return NextResponse.next({ request });
+  }
 
   let response = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;

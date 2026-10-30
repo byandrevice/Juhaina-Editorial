@@ -1554,3 +1554,48 @@ not been measured on the deployed site; this is a local change.
 
 Demonstrates performance work guided by client feedback, removal of competing
 requests, and asset optimization with explicit visual and geometry checks.
+
+## 2026-10-30 — Homepage objects visible in the initial HTML
+
+### Problem
+
+After the compressed models were deployed, the client still found their
+first appearance too slow. Download reduction alone left JavaScript startup,
+model decoding, texture upload, and WebGL initialization ahead of any object
+appearing. Public asset requests also passed through session refresh.
+
+### Decision and rationale
+
+Embed transparent first-pose renders of all four actual models in the initial
+HTML, then progressively replace each with live 3D after its first rendered
+frame. Start enhancement after the previews can paint. Keep the previews if
+JavaScript, WebGL, or a model request fails. Prebuild the public homepage,
+apply review-only query parameters in the browser, preload a much smaller
+background, and limit session refresh to authoring/authentication routes.
+
+### User benefit
+
+All four objects and their links appear without waiting for the 6.57 MB of
+live models or the 3D JavaScript bundle. The four inline preview images total
+18.46 KB, and the background falls from 1.19 MB to 46.26 KB. Visitors retain
+the rotating objects when enhancement finishes and useful navigation when
+it cannot finish. No loading screen is introduced.
+
+### Evidence and validation
+
+- Production build lists `/` as statically generated. Its initial HTML
+  contains four previews and the background preload; gzip size is 21,112 bytes.
+- Browser verification with all JavaScript blocked shows four decoded,
+  visible previews, four links, and zero canvases.
+- Deliberately failing every GLB request still shows all four previews.
+- Normal rendering replaces all four previews with live canvases without
+  model errors. Type checking and production build pass.
+- Unauthenticated admin page/API requests still return 307/401, and
+  admin-only mode still blocks the public homepage and assets with 404.
+- [Validation and visual evidence](audits/homepage-first-paint-2026-10-30/validation.md).
+
+### Portfolio signal
+
+Shows iteration from client feedback, a distinction between download size
+and first appearance, and progressive enhancement verified under failure
+conditions rather than relying only on a fast development connection.
