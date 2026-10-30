@@ -1517,3 +1517,40 @@ model as the other editorial sections.
 Demonstrates a reversible content-migration strategy, safe client onboarding,
 and reuse of a mature publishing architecture without flattening distinct
 editorial products into one generic CMS form.
+
+## 2026-10-30 — Faster homepage 3D assets
+
+### Problem
+
+Juhaina reported that the homepage objects appeared too slowly. The page
+downloaded all eight study models, although only four are shown, and the
+published models retained large textures and compressible geometry data.
+
+### Decision and rationale
+
+Prefer actual download reduction over a loading screen. Preload only the
+four published pairings and export the VCR, flower, and cigarette box with
+WebP textures and Meshopt compression. Preserve every triangle and normalize
+the flower's repeating UV tiles so its texture coordinates compress better.
+Keep the small Nokia unchanged. Retain alternatives as on-demand study assets.
+
+### User benefit
+
+Visitors download 75.2% fewer GLB bytes (26.50 MB → 6.57 MB), while the
+homepage keeps its established objects, labels, motion, and immediate links.
+No blocking loading screen is introduced.
+
+### Evidence and validation
+
+All optimized files decode through the installed runtime Meshopt decoder;
+vertex, triangle, and material counts match the originals. Browser inspection
+confirmed all four objects render without model errors. Type checking and
+the production build passed. A reproducible export script and
+[validation record](audits/homepage-loading-2026-10-30/validation.md) retain
+the exact before/after sizes and visual evidence. Timing improvements have
+not been measured on the deployed site; this is a local change.
+
+### Portfolio signal
+
+Demonstrates performance work guided by client feedback, removal of competing
+requests, and asset optimization with explicit visual and geometry checks.

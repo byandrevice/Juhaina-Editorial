@@ -116,11 +116,8 @@ export default function PortalScene({
   );
 }
 
-useGLTF.preload("/models/home/air-conditioner.glb");
+// Preload only the four published pairings. Study alternatives load when selected.
 useGLTF.preload("/models/home/camellia-sasanqua-shishigashira.glb");
 useGLTF.preload("/models/home/vcr-hanseatic-vcr-200.glb");
 useGLTF.preload("/models/home/cigarette-box.glb");
-useGLTF.preload("/models/home/candidates/psx-handheld-camcorder.glb");
-useGLTF.preload("/models/home/candidates/audio-recorder.glb");
-useGLTF.preload("/models/home/candidates/sony-gv-8-video-walkman.glb");
 useGLTF.preload("/models/home/candidates/psx-nokia.glb");
